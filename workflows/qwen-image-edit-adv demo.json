@@ -1,8 +1,8 @@
 {
   "id": "91f6bbe2-ed41-4fd6-bac7-71d5b5864ecb",
   "revision": 0,
-  "last_node_id": 147,
-  "last_link_id": 329,
+  "last_node_id": 148,
+  "last_link_id": 334,
   "nodes": [
     {
       "id": 101,
@@ -225,7 +225,7 @@
         {
           "name": "pixels",
           "type": "IMAGE",
-          "link": 329
+          "link": 334
         },
         {
           "name": "vae",
@@ -602,35 +602,6 @@
       "bgcolor": "#29699c"
     },
     {
-      "id": 117,
-      "type": "PreviewImage",
-      "pos": [
-        632.7257690429688,
-        625.0753173828125
-      ],
-      "size": [
-        376.3637390136719,
-        505.1707763671875
-      ],
-      "flags": {},
-      "order": 13,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 327
-        }
-      ],
-      "outputs": [],
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.3.56",
-        "Node name for S&R": "PreviewImage"
-      },
-      "widgets_values": []
-    },
-    {
       "id": 108,
       "type": "Image Comparer (rgthree)",
       "pos": [
@@ -655,7 +626,7 @@
           "dir": 3,
           "name": "image_b",
           "type": "IMAGE",
-          "link": 328
+          "link": 333
         }
       ],
       "outputs": [],
@@ -669,51 +640,15 @@
           {
             "name": "A",
             "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_ooumx_00007_.png&type=temp&subfolder=&rand=0.7204988653666855"
+            "url": "/api/view?filename=rgthree.compare._temp_rhcku_00003_.png&type=temp&subfolder=&rand=0.7873918651676459"
           },
           {
             "name": "B",
             "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_ooumx_00008_.png&type=temp&subfolder=&rand=0.07139783157215618"
+            "url": "/api/view?filename=rgthree.compare._temp_rhcku_00004_.png&type=temp&subfolder=&rand=0.6341855506563895"
           }
         ]
       ]
-    },
-    {
-      "id": 111,
-      "type": "Reroute",
-      "pos": [
-        439.4926452636719,
-        565.7713012695312
-      ],
-      "size": [
-        75,
-        26
-      ],
-      "flags": {},
-      "order": 7,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "",
-          "type": "*",
-          "link": 297
-        }
-      ],
-      "outputs": [
-        {
-          "name": "",
-          "type": "IMAGE",
-          "links": [
-            210,
-            321
-          ]
-        }
-      ],
-      "properties": {
-        "showOutputText": false,
-        "horizontal": false
-      }
     },
     {
       "id": 133,
@@ -745,7 +680,7 @@
           "name": "image",
           "shape": 7,
           "type": "IMAGE",
-          "link": 326
+          "link": 331
         },
         {
           "name": "prompt",
@@ -766,24 +701,61 @@
         }
       ],
       "properties": {
-        "aux_id": "lenML/comfyui_qwen_image_edit_adv",
+        "cnr_id": "comfyui_qwen_image_edit_adv",
         "ver": "1ae3887d65943867c90d3829287c2065f1e52547",
-        "Node name for S&R": "TextEncodeQwenImageEditAdv"
+        "Node name for S&R": "TextEncodeQwenImageEditAdv",
+        "aux_id": "lenML/comfyui_qwen_image_edit_adv"
       },
       "widgets_values": [
         ""
       ]
     },
     {
-      "id": 147,
-      "type": "QwenImageEditScale",
+      "id": 111,
+      "type": "Reroute",
       "pos": [
-        628.2059936523438,
-        353.3961486816406
+        439.4926452636719,
+        565.7713012695312
       ],
       "size": [
-        270,
-        170
+        75,
+        26
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "",
+          "type": "*",
+          "link": 297
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "IMAGE",
+          "links": [
+            210,
+            330
+          ]
+        }
+      ],
+      "properties": {
+        "showOutputText": false,
+        "horizontal": false
+      }
+    },
+    {
+      "id": 148,
+      "type": "QwenImageEditSimpleScale",
+      "pos": [
+        628.9420776367188,
+        344.4936828613281
+      ],
+      "size": [
+        217.31991577148438,
+        66
       ],
       "flags": {},
       "order": 10,
@@ -792,7 +764,7 @@
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 321
+          "link": 330
         }
       ],
       "outputs": [
@@ -800,10 +772,10 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            326,
-            327,
-            328,
-            329
+            331,
+            332,
+            333,
+            334
           ]
         },
         {
@@ -818,16 +790,39 @@
         }
       ],
       "properties": {
-        "aux_id": "lenML/comfyui_qwen_image_edit_adv",
+        "cnr_id": "comfyui_qwen_image_edit_adv",
         "ver": "1ae3887d65943867c90d3829287c2065f1e52547",
-        "Node name for S&R": "QwenImageEditScale"
+        "Node name for S&R": "QwenImageEditSimpleScale"
+      }
+    },
+    {
+      "id": 117,
+      "type": "PreviewImage",
+      "pos": [
+        636.4955444335938,
+        593.0325927734375
+      ],
+      "size": [
+        376.3637390136719,
+        505.1707763671875
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 332
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.56",
+        "Node name for S&R": "PreviewImage"
       },
-      "widgets_values": [
-        "area",
-        "disabled",
-        1,
-        32
-      ]
+      "widgets_values": []
     }
   ],
   "links": [
@@ -976,40 +971,40 @@
       "INT"
     ],
     [
-      321,
+      330,
       111,
       0,
-      147,
+      148,
       0,
       "IMAGE"
     ],
     [
-      326,
-      147,
+      331,
+      148,
       0,
       133,
       2,
       "IMAGE"
     ],
     [
-      327,
-      147,
+      332,
+      148,
       0,
       117,
       0,
       "IMAGE"
     ],
     [
-      328,
-      147,
+      333,
+      148,
       0,
       108,
       1,
       "IMAGE"
     ],
     [
-      329,
-      147,
+      334,
+      148,
       0,
       88,
       0,
@@ -1060,10 +1055,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.5989500000000003,
+      "scale": 0.6588450000000009,
       "offset": [
-        269.695567494609,
-        137.09188855194404
+        465.48975000683646,
+        44.65263681952827
       ]
     },
     "frontendVersion": "1.25.11",

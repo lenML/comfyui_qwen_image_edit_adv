@@ -1,8 +1,8 @@
 {
   "id": "91f6bbe2-ed41-4fd6-bac7-71d5b5864ecb",
   "revision": 0,
-  "last_node_id": 147,
-  "last_link_id": 324,
+  "last_node_id": 148,
+  "last_link_id": 329,
   "nodes": [
     {
       "id": 101,
@@ -212,65 +212,6 @@
       ]
     },
     {
-      "id": 133,
-      "type": "TextEncodeQwenImageEditAdv",
-      "pos": [
-        759.4649047851562,
-        64.68230438232422
-      ],
-      "size": [
-        400,
-        200
-      ],
-      "flags": {},
-      "order": 17,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 286
-        },
-        {
-          "name": "vae",
-          "shape": 7,
-          "type": "VAE",
-          "link": 287
-        },
-        {
-          "name": "image",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": 321
-        },
-        {
-          "name": "prompt",
-          "type": "STRING",
-          "widget": {
-            "name": "prompt"
-          },
-          "link": 304
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [
-            289
-          ]
-        }
-      ],
-      "properties": {
-        "aux_id": "lenML/comfyui_qwen_image_edit_adv",
-        "ver": "1ae3887d65943867c90d3829287c2065f1e52547",
-        "Node name for S&R": "TextEncodeQwenImageEditAdv"
-      },
-      "widgets_values": [
-        ""
-      ]
-    },
-    {
       "id": 88,
       "type": "VAEEncode",
       "pos": [
@@ -288,7 +229,7 @@
         {
           "name": "pixels",
           "type": "IMAGE",
-          "link": 322
+          "link": 326
         },
         {
           "name": "vae",
@@ -612,12 +553,12 @@
           {
             "name": "A",
             "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_adbpn_00003_.png&type=temp&subfolder=&rand=0.7745921528673833"
+            "url": "/api/view?filename=rgthree.compare._temp_zixev_00001_.png&type=temp&subfolder=&rand=0.9699438589274972"
           },
           {
             "name": "B",
             "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_adbpn_00004_.png&type=temp&subfolder=&rand=0.6537744189027972"
+            "url": "/api/view?filename=rgthree.compare._temp_zixev_00002_.png&type=temp&subfolder=&rand=0.808778713604897"
           }
         ]
       ]
@@ -976,12 +917,12 @@
           {
             "name": "A",
             "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_ykptm_00003_.png&type=temp&subfolder=&rand=0.9464991778870412"
+            "url": "/api/view?filename=rgthree.compare._temp_dknmz_00001_.png&type=temp&subfolder=&rand=0.8086968624356311"
           },
           {
             "name": "B",
             "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_ykptm_00004_.png&type=temp&subfolder=&rand=0.757694909771815"
+            "url": "/api/view?filename=rgthree.compare._temp_dknmz_00002_.png&type=temp&subfolder=&rand=0.38150994555414397"
           }
         ]
       ]
@@ -1115,7 +1056,7 @@
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 323
+          "link": 328
         }
       ],
       "outputs": [],
@@ -1154,7 +1095,7 @@
           "links": [
             210,
             302,
-            320
+            329
           ]
         }
       ],
@@ -1162,61 +1103,6 @@
         "showOutputText": false,
         "horizontal": false
       }
-    },
-    {
-      "id": 147,
-      "type": "QwenImageEditScale",
-      "pos": [
-        786.7459716796875,
-        361.4809265136719
-      ],
-      "size": [
-        270,
-        170
-      ],
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 320
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            321,
-            322,
-            323,
-            324
-          ]
-        },
-        {
-          "name": "width",
-          "type": "INT",
-          "links": null
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "links": null
-        }
-      ],
-      "properties": {
-        "aux_id": "lenML/comfyui_qwen_image_edit_adv",
-        "ver": "1ae3887d65943867c90d3829287c2065f1e52547",
-        "Node name for S&R": "QwenImageEditScale"
-      },
-      "widgets_values": [
-        "area",
-        "disabled",
-        1,
-        32
-      ]
     },
     {
       "id": 108,
@@ -1243,7 +1129,7 @@
           "dir": 3,
           "name": "image_b",
           "type": "IMAGE",
-          "link": 324
+          "link": 327
         }
       ],
       "outputs": [],
@@ -1257,15 +1143,124 @@
           {
             "name": "A",
             "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_ooumx_00007_.png&type=temp&subfolder=&rand=0.7204988653666855"
+            "url": "/api/view?filename=rgthree.compare._temp_rhcku_00005_.png&type=temp&subfolder=&rand=0.06274131562834706"
           },
           {
             "name": "B",
             "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_ooumx_00008_.png&type=temp&subfolder=&rand=0.07139783157215618"
+            "url": "/api/view?filename=rgthree.compare._temp_rhcku_00006_.png&type=temp&subfolder=&rand=0.04250841102711356"
           }
         ]
       ]
+    },
+    {
+      "id": 133,
+      "type": "TextEncodeQwenImageEditAdv",
+      "pos": [
+        762.8858032226562,
+        84.06826782226562
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 286
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 287
+        },
+        {
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 325
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "prompt"
+          },
+          "link": 304
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            289
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui_qwen_image_edit_adv",
+        "ver": "1ae3887d65943867c90d3829287c2065f1e52547",
+        "Node name for S&R": "TextEncodeQwenImageEditAdv",
+        "aux_id": "lenML/comfyui_qwen_image_edit_adv"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 148,
+      "type": "QwenImageEditSimpleScale",
+      "pos": [
+        814.5308227539062,
+        394.554443359375
+      ],
+      "size": [
+        217.31991577148438,
+        66
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 329
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            325,
+            326,
+            327,
+            328
+          ]
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui_qwen_image_edit_adv",
+        "ver": "1ae3887d65943867c90d3829287c2065f1e52547",
+        "Node name for S&R": "QwenImageEditSimpleScale"
+      }
     }
   ],
   "links": [
@@ -1558,43 +1553,43 @@
       "VAE"
     ],
     [
-      320,
-      111,
-      0,
-      147,
-      0,
-      "IMAGE"
-    ],
-    [
-      321,
-      147,
+      325,
+      148,
       0,
       133,
       2,
       "IMAGE"
     ],
     [
-      322,
-      147,
+      326,
+      148,
       0,
       88,
       0,
       "IMAGE"
     ],
     [
-      323,
-      147,
+      327,
+      148,
+      0,
+      108,
+      1,
+      "IMAGE"
+    ],
+    [
+      328,
+      148,
       0,
       117,
       0,
       "IMAGE"
     ],
     [
-      324,
-      147,
+      329,
+      111,
       0,
-      108,
-      1,
+      148,
+      0,
       "IMAGE"
     ]
   ],
@@ -1655,10 +1650,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.5445000000000003,
+      "scale": 0.8769226950000027,
       "offset": [
-        754.7762770163399,
-        69.50187841218653
+        -884.6313690511382,
+        73.13418051143091
       ]
     },
     "frontendVersion": "1.25.11",

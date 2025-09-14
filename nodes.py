@@ -99,9 +99,9 @@ class QwenImageEditScale:
 
         # 2. 将尺寸对齐到指定倍数
         # 注意: common_upscale 内部会处理crop，我们这里只需要提供最终的目标尺寸
-        aligned_width = math.floor(new_width / alignment) * alignment
-        aligned_height = math.floor(new_height / alignment) * alignment
-        
+        aligned_width = new_width // alignment * alignment
+        aligned_height = new_height // alignment * alignment
+
         # 安全兜底，避免超过目标像素数
         while aligned_width * aligned_height > target_total_pixels:
             aligned_width -= alignment
@@ -115,6 +115,71 @@ class QwenImageEditScale:
         # 3. 使用对齐后的尺寸和用户选择的方法进行缩放
         s = comfy.utils.common_upscale(
             samples, int(aligned_width), int(aligned_height), upscale_method, crop
+        )
+
+        # Convert back to [Batch, Height, Width, Channels]
+        aligned_image = s.movedim(1, -1)
+
+        return (aligned_image, int(aligned_width), int(aligned_height))
+
+
+class QwenImageEditSimpleScale:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "image": ("IMAGE",),
+            },
+            "optional": {},
+        }
+
+    RETURN_TYPES = ("IMAGE", "INT", "INT")
+    RETURN_NAMES = ("IMAGE", "width", "height")
+    FUNCTION = "scale_and_align"
+
+    CATEGORY = "QwenImageEditAdv/Scale"
+
+    def scale_and_align(self, image):
+        # image tensor shape: [Batch, Height, Width, Channels]
+        # comfy.utils.common_upscale expects: [Batch, Channels, Height, Width]
+        samples = image.movedim(-1, 1)
+
+        original_height = samples.shape[2]
+        original_width = samples.shape[3]
+
+        if original_height == 0 or original_width == 0:
+            return (image, 0, 0)
+
+        # 1. 计算保持宽高比的新尺寸
+        target_total_pixels = 1024 * 1024
+        max_length = (
+            original_width if original_width > original_height else original_height
+        )
+        max_area = max_length * max_length
+        scale = math.sqrt(target_total_pixels / max_area)
+
+        new_height = int(original_height * scale)
+        new_width = int(original_width * scale)
+
+        # 2. 将尺寸对齐到指定倍数
+        # 注意: common_upscale 内部会处理crop，我们这里只需要提供最终的目标尺寸
+        alignment = 32
+        aligned_width = new_width // alignment * alignment
+        aligned_height = new_height // alignment * alignment
+
+        # 安全兜底，避免超过目标像素数
+        while aligned_width * aligned_height > target_total_pixels:
+            aligned_width -= alignment
+            aligned_height -= alignment
+
+        # 如果对齐后尺寸为0，则避免缩放
+        if aligned_width * aligned_height <= 0:
+            # 返回原始图像和尺寸，避免错误
+            return (image, original_width, original_height)
+
+        # 3. 使用对齐后的尺寸和用户选择的方法进行缩放
+        s = comfy.utils.common_upscale(
+            samples, int(aligned_width), int(aligned_height), "area", "center"
         )
 
         # Convert back to [Batch, Height, Width, Channels]
