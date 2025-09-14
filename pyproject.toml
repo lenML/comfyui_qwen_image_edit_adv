@@ -1,0 +1,15 @@
+
+[project]
+name = "comfyui_qwen_image_edit_adv"
+description = "Improved qwen image editing accuracy"
+version = "1.0.0"
+license = { file = "LICENSE" }
+dependencies = [""]
+
+[project.urls]
+Repository = "https://github.com/lenML/comfyui_qwen_image_edit_adv"
+
+[tool.comfy]
+PublisherId = "lenML"
+DisplayName = "comfyui_qwen_image_edit_adv"
+Icon = ""
