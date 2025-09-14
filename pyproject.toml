@@ -2,7 +2,7 @@
 [project]
 name = "comfyui_qwen_image_edit_adv"
 description = "Improved qwen image editing accuracy"
-version = "1.0.0"
+version = "1.0.1"
 license = { file = "LICENSE" }
 dependencies = [""]
 

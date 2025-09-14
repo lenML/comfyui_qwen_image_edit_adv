@@ -57,9 +57,9 @@ class QwenImageEditScale:
                     "FLOAT",
                     {
                         "default": 1.0,
-                        "min": 0.1,
+                        "min": 0.01,
                         "max": 16.0,
-                        "step": 0.1,
+                        "step": 0.01,
                         "round": 0.01,
                     },
                 ),
@@ -99,11 +99,16 @@ class QwenImageEditScale:
 
         # 2. 将尺寸对齐到指定倍数
         # 注意: common_upscale 内部会处理crop，我们这里只需要提供最终的目标尺寸
-        aligned_width = round(new_width / alignment) * alignment
-        aligned_height = round(new_height / alignment) * alignment
+        aligned_width = math.floor(new_width / alignment) * alignment
+        aligned_height = math.floor(new_height / alignment) * alignment
+        
+        # 安全兜底，避免超过目标像素数
+        while aligned_width * aligned_height > target_total_pixels:
+            aligned_width -= alignment
+            aligned_height -= alignment
 
         # 如果对齐后尺寸为0，则避免缩放
-        if aligned_width == 0 or aligned_height == 0:
+        if aligned_width * aligned_height <= 0:
             # 返回原始图像和尺寸，避免错误
             return (image, original_width, original_height)
 
