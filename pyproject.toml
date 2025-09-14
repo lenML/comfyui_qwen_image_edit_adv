@@ -10,6 +10,6 @@ dependencies = [""]
 Repository = "https://github.com/lenML/comfyui_qwen_image_edit_adv"
 
 [tool.comfy]
-PublisherId = "lenML"
+PublisherId = "len-ml"
 DisplayName = "comfyui_qwen_image_edit_adv"
 Icon = ""
