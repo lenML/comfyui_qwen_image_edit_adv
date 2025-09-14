@@ -47,6 +47,8 @@ QwenImageEditScale 节点中包含多个可配置的值，几乎不需要改动�
 
 ### QwenImageEditSimpleScale
 
+<img width="410" height="176" alt="image" src="https://github.com/user-attachments/assets/7121e914-770b-411e-a767-af11d6db29d5" />
+
 这是 QwenImageEditScale 节点的简化版，作用一样，但是不需要配置，通过一个简单的公式自动缩放到最适合的大小。与 QwenImageEditScale 相比往往会压缩更多像素。
 
 建议：一般情况使用 `QwenImageEditSimpleScale` 即可， 如果需要调试则使用 `QwenImageEditScale`
