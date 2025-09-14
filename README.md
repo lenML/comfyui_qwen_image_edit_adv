@@ -45,6 +45,10 @@ QwenImageEditScale 节点中包含多个可配置的值，几乎不需要改动�
 - alignment: 需要对齐到什么分辨率尺寸，此处建议默认 32，此值为 qwen 官方使用值，具体为什么是这个值，和模型训练数据/vae/clip 有关
   - 推荐值： `32` `56` `14` `8`
 
+### Consistance lora
+
+如果需要更加强的一致性控制，也可以尝试和 xiaozhijason 制作的 [QwenEdit Consistance Edit Lora](https://civitai.com/models/1939453/qwenedit-consistance-edit-lora) 一起使用
+
 ## 后续
 
 后续可能会增加更多和 qwen image edit 有关的功能，但是，将仅限于不引入任何第三方依赖的前提下进行开发
