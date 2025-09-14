@@ -5,6 +5,10 @@
 - TextEncodeQwenImageEditAdv: 仅编码图片和 prompt 不进行缩放
 - QwenImageEditScale: 缩放图片以符合 Qwen Image Edit 模型需要
 
+<img width="957" height="773" alt="image" src="https://github.com/user-attachments/assets/c0872af7-2f41-4c88-b822-932c9628d558" />
+
+> 使用对比节点可以看出没有任何的偏移出现，且不需要抽卡多次生成
+
 ## 背景
 
 使用 comfyui 内置的 qwen image edit 节点编辑图片的时候，总是会导致输出编辑结果偏移
