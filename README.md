@@ -8,7 +8,7 @@
 - **QwenImageEditScale**: 提供灵活可控的缩放和裁剪逻辑，满足 Qwen Image Edit 模型需求
 - **QwenImageEditSimpleScale**: 自动选择最合适的分辨率进行缩放的简化版
 
-<img width="957" height="773" alt="workflow" src="https://github.com/user-attachments/assets/c0872af7-2f41-4c88-b822-932c9628d558" />
+<img width="946" height="683" alt="image" src="https://github.com/user-attachments/assets/4f57406b-5b11-4738-a833-2eaed4e54c0f" />
 
 > 在对比测试中，可以看到本实现不会出现偏移问题，且无需多次抽卡生成。
 
@@ -19,7 +19,7 @@
 ComfyUI 内置的 `TextEncodeQwenImageEdit` 节点包含了强绑定的缩放逻辑，但该缩放方式与 Qwen Image Edit 模型官方要求并不完全一致，且难以调试。
 因此，本仓库将 **缩放** 与 **编码** 分离开，并提供更合理的缩放策略，方便测试和调优。
 
-你可以使用 `./workflows/qwen-image-edit-adv.json` 工作流快速对比官方流程与本节点输出结果，并通过 comparer 查看一致性。
+你可以使用 [`./workflows/demo_compare.json`](./workflows/demo_compare.json) 工作流快速对比官方流程与本节点输出结果，并通过 comparer 查看一致性。
 
 ---
 
@@ -27,7 +27,7 @@ ComfyUI 内置的 `TextEncodeQwenImageEdit` 节点包含了强绑定的缩放逻
 
 ### 1. TextEncodeQwenImageEditAdv
 
-<img width="521" height="308" alt="encode" src="https://github.com/user-attachments/assets/16366f89-4ec1-424f-ac07-d63405ae5319" />
+<img width="675" height="378" alt="image" src="https://github.com/user-attachments/assets/69a05fe7-b213-43bf-bfee-47f88fda65d4" />
 
 作用与内置的 `TextEncodeQwenImageEdit` 基本一致：
 
@@ -39,7 +39,7 @@ ComfyUI 内置的 `TextEncodeQwenImageEdit` 节点包含了强绑定的缩放逻
 
 ### 2. QwenImageEditScale
 
-<img width="347" height="252" alt="scale" src="https://github.com/user-attachments/assets/cc4dbc78-e1ed-45e4-9c98-1b2026d87bae" />
+<img width="459" height="368" alt="image" src="https://github.com/user-attachments/assets/548bcec4-9533-4e25-aef4-e30ffd0a9542" />
 
 提供高度可配置的缩放与裁剪逻辑。
 
@@ -71,6 +71,8 @@ ComfyUI 内置的 `TextEncodeQwenImageEdit` 节点包含了强绑定的缩放逻
 ---
 
 ### 3. QwenImageEditSimpleScale
+
+<img width="473" height="244" alt="image" src="https://github.com/user-attachments/assets/b7f18ef8-1513-4899-a4bd-3392adf89980" />
 
 `QwenImageEditScale` 的简化版：
 
