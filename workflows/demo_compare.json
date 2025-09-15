@@ -515,7 +515,7 @@
         "Node name for S&R": "StringArea"
       },
       "widgets_values": [
-        "Replace clothing with office lady suit uniform"
+        "Replace clothing with office lady suit uniform.\n\nkeep pose, body, face, background unchanged."
       ],
       "color": "#232",
       "bgcolor": "#353"
