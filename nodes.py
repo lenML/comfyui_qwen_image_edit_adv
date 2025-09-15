@@ -1,6 +1,7 @@
 import node_helpers
 import comfy.utils
 import math
+import torch
 
 
 class TextEncodeQwenImageEditAdv:
@@ -17,7 +18,10 @@ class TextEncodeQwenImageEditAdv:
             },
         }
 
-    RETURN_TYPES = ("CONDITIONING",)
+    RETURN_TYPES = (
+        "CONDITIONING",
+        "LATENT",
+    )
     FUNCTION = "encode"
 
     CATEGORY = "QwenImageEditAdv/conditioning"
@@ -37,20 +41,125 @@ class TextEncodeQwenImageEditAdv:
             conditioning = node_helpers.conditioning_set_values(
                 conditioning, {"reference_latents": [ref_latent]}, append=True
             )
-        return (conditioning,)
+        return (conditioning, {"samples": ref_latent})
 
 
-class QwenImageEditScale:
+class QwenImageEditScaleBase:
+    """基础缩放逻辑，供子类复用"""
+
     UPSCALE_METHODS = ["area", "bicubic", "bilinear", "nearest-exact", "lanczos"]
     CROP_METHODS = ["disabled", "center"]
 
+    ALLOWED_ASPECT_RATIOS = [
+        (1, 1),
+        (2, 3),
+        (3, 2),
+        (3, 4),
+        (4, 3),
+        (9, 16),
+        (16, 9),
+        (1, 3),
+        (3, 1),
+    ]
+
+    CROP_STRATEGIES = ["disabled", "closest", "fixed"]  # 新增配置
+
+    @classmethod
+    def ratio_choices(cls):
+        """生成 'W:H' 格式的字符串列表"""
+        return [f"{w}:{h}" for w, h in cls.ALLOWED_ASPECT_RATIOS]
+
+    @classmethod
+    def parse_ratio(cls, ratio_str):
+        """从 'W:H' 解析成 (w, h)"""
+        if isinstance(ratio_str, str) and ":" in ratio_str:
+            w, h = ratio_str.split(":")
+            return int(w), int(h)
+        return None
+
+    def find_closest_ratio(self, w, h, allowed_ratios):
+        aspect_ratio = w / h
+        best_ratio = None
+        best_diff = float("inf")
+        for rw, rh in allowed_ratios:
+            r = rw / rh
+            diff = abs(r - aspect_ratio)
+            if diff < best_diff:
+                best_diff = diff
+                best_ratio = (rw, rh)
+        return best_ratio
+
+    def center_crop_to_ratio(self, image, target_ratio):
+        # image shape: [B, C, H, W]
+        b, c, h, w = image.shape
+        target_w, target_h = target_ratio
+        target_aspect = target_w / target_h
+        current_aspect = w / h
+
+        if current_aspect > target_aspect:
+            # 裁宽
+            new_w = int(h * target_aspect)
+            offset = (w - new_w) // 2
+            cropped = image[:, :, :, offset : offset + new_w]
+        else:
+            # 裁高
+            new_h = int(w / target_aspect)
+            offset = (h - new_h) // 2
+            cropped = image[:, :, offset : offset + new_h, :]
+        return cropped
+
+    def apply_crop_strategy(self, samples, crop_strategy, fixed_ratio=None):
+        """根据策略裁剪：disabled / closest / fixed"""
+        h, w = samples.shape[2], samples.shape[3]
+
+        if crop_strategy == "disabled":
+            return samples
+        elif crop_strategy == "closest":
+            target_ratio = self.find_closest_ratio(w, h, self.ALLOWED_ASPECT_RATIOS)
+            return self.center_crop_to_ratio(samples, target_ratio)
+        elif crop_strategy == "fixed" and fixed_ratio is not None:
+            ratio_tuple = self.parse_ratio(fixed_ratio)
+            if ratio_tuple:
+                return self.center_crop_to_ratio(samples, ratio_tuple)
+        return samples
+
+    def upscale_and_align(
+        self,
+        samples,
+        new_width,
+        new_height,
+        upscale_method,
+        crop,
+        target_total_pixels,
+        alignment,
+    ):
+        aligned_width = int(new_width) // alignment * alignment
+        aligned_height = int(new_height) // alignment * alignment
+
+        while aligned_width * aligned_height > target_total_pixels:
+            aligned_width -= alignment
+            aligned_height -= alignment
+
+        if aligned_width <= 0 or aligned_height <= 0:
+            return samples, 0, 0
+
+        s = comfy.utils.common_upscale(
+            samples, aligned_width, aligned_height, upscale_method, crop
+        )
+        return s, aligned_width, aligned_height
+
+
+class QwenImageEditScale(QwenImageEditScaleBase):
     @classmethod
     def INPUT_TYPES(s):
         return {
             "required": {
                 "image": ("IMAGE",),
                 "upscale_method": (s.UPSCALE_METHODS, {"default": "area"}),
-                "crop": (s.CROP_METHODS, {"default": "disabled"}),
+                "ratio_strategy": (
+                    ["disabled", "closest"] + s.ratio_choices(),
+                    {"default": "closest"},
+                ),
             },
             "optional": {
                 "target_megapixels": (
@@ -67,60 +176,95 @@ class QwenImageEditScale:
             },
         }
 
-    RETURN_TYPES = ("IMAGE", "INT", "INT")
-    RETURN_NAMES = ("IMAGE", "width", "height")
+    RETURN_TYPES = ("IMAGE", "INT", "INT", "STRING")
+    RETURN_NAMES = ("IMAGE", "width", "height", "ratio")
     FUNCTION = "scale_and_align"
-
     CATEGORY = "QwenImageEditAdv/Scale"
 
     def scale_and_align(
-        self, image, upscale_method, crop, target_megapixels=1.0, alignment=32
+        self,
+        image,
+        upscale_method,
+        ratio_strategy="closest",
+        target_megapixels=1.0,
+        alignment=32,
     ):
-        # image tensor shape: [Batch, Height, Width, Channels]
-        # comfy.utils.common_upscale expects: [Batch, Channels, Height, Width]
         samples = image.movedim(-1, 1)
+        h, w = samples.shape[2], samples.shape[3]
+        if h == 0 or w == 0:
+            return (image, 0, 0, "invalid")
 
-        original_height = samples.shape[2]
-        original_width = samples.shape[3]
+        # clamp total pixels in safe range [0.3M, 1.4M]
+        target_total_pixels = int(target_megapixels * 1024 * 1024)
+        target_total_pixels = max(300_000, min(target_total_pixels, 1_400_000))
 
-        if original_height == 0 or original_width == 0:
-            return (image, 0, 0)
+        # decide ratio
+        if ratio_strategy == "disabled":
+            rw, rh = w, h
+        elif ratio_strategy == "closest":
+            rw, rh = self.find_closest_ratio(w, h, self.ALLOWED_ASPECT_RATIOS)
+            samples = self.center_crop_to_ratio(samples, (rw, rh))
+        else:
+            rw, rh = self.parse_ratio(ratio_strategy)
+            samples = self.center_crop_to_ratio(samples, (rw, rh))
 
-        # 1. 计算保持宽高比的新尺寸
-        target_total_pixels = target_megapixels * 1024 * 1024
-        aspect_ratio = original_width / original_height
+        aspect_ratio = rw / rh
 
-        # h * w = total_pixels
-        # w = h * aspect_ratio
-        # h * (h * aspect_ratio) = total_pixels => h^2 * aspect_ratio = total_pixels
+        # 计算缩放因子
+        scale_factor = math.sqrt(target_total_pixels / (w * h))
+        new_width = w * scale_factor
+        new_height = h * scale_factor
 
-        new_height = math.sqrt(target_total_pixels / aspect_ratio)
-        new_width = new_height * aspect_ratio
+        # 对齐
+        aligned_width = round(new_width / alignment) * alignment
+        aligned_height = round(new_height / alignment) * alignment
 
-        # 2. 将尺寸对齐到指定倍数
-        # 注意: common_upscale 内部会处理crop，我们这里只需要提供最终的目标尺寸
-        aligned_width = new_width // alignment * alignment
-        aligned_height = new_height // alignment * alignment
+        if aligned_width <= 0 or aligned_height <= 0:
+            return (image, 0, 0, f"{rw}:{rh}")
 
-        # 安全兜底，避免超过目标像素数
-        while aligned_width * aligned_height > target_total_pixels:
-            aligned_width -= alignment
-            aligned_height -= alignment
-
-        # 如果对齐后尺寸为0，则避免缩放
-        if aligned_width * aligned_height <= 0:
-            # 返回原始图像和尺寸，避免错误
-            return (image, original_width, original_height)
-
-        # 3. 使用对齐后的尺寸和用户选择的方法进行缩放
         s = comfy.utils.common_upscale(
-            samples, int(aligned_width), int(aligned_height), upscale_method, crop
+            samples, aligned_width, aligned_height, upscale_method, "center"
         )
-
-        # Convert back to [Batch, Height, Width, Channels]
         aligned_image = s.movedim(1, -1)
+        return (aligned_image, aligned_width, aligned_height, f"{rw}:{rh}")
 
-        return (aligned_image, int(aligned_width), int(aligned_height))
+
+# 生成允许的分辨率
+def generate_allowed_resolutions(
+    min_pixels=256**2, max_pixels=1328**2, step=32, ratios=None
+):
+    allowed = []
+    if ratios is None:
+        ratios = [
+            (1, 1),
+            (2, 3),
+            (3, 2),
+            (3, 4),
+            (4, 3),
+            (9, 16),
+            (16, 9),
+            (1, 3),
+            (3, 1),
+            (4, 5),
+            (5, 4),
+            (2, 1),
+            (1, 2),
+        ]
+    for rw, rh in ratios:
+        max_w = int((max_pixels * rw / rh) ** 0.5)
+        w = step
+        while w <= max_w:
+            h = int(w * rh / rw)
+            h = (h // step) * step
+            total_pixels = w * h
+            if total_pixels < min_pixels:
+                w += step
+                continue
+            if total_pixels > max_pixels:
+                break
+            allowed.append((w, h))
+            w += step
+    return allowed
 
 
 class QwenImageEditSimpleScale:
@@ -129,60 +273,52 @@ class QwenImageEditSimpleScale:
         return {
             "required": {
                 "image": ("IMAGE",),
-            },
-            "optional": {},
+                "max_side": (
+                    "INT",
+                    {"default": 1024, "min": 512, "max": 4096, "step": 8},
+                ),
+                "aligment": (
+                    "INT",
+                    {"default": 32, "min": 8, "max": 256, "step": 2},
+                ),
+            }
         }
 
     RETURN_TYPES = ("IMAGE", "INT", "INT")
     RETURN_NAMES = ("IMAGE", "width", "height")
-    FUNCTION = "scale_and_align"
-
     CATEGORY = "QwenImageEditAdv/Scale"
 
-    def scale_and_align(self, image):
-        # image tensor shape: [Batch, Height, Width, Channels]
-        # comfy.utils.common_upscale expects: [Batch, Channels, Height, Width]
-        samples = image.movedim(-1, 1)
+    FUNCTION = "scale"
+    DESCRIPTION = "Resizes image to the closest Qwen-Image-Edit compatible resolution (0.3M–1.4M pixels), with configurable max side length and step alignment."
 
-        original_height = samples.shape[2]
-        original_width = samples.shape[3]
+    def scale(self, image, max_side=1024, aligment=32):
+        h, w = image.shape[1:3]
 
-        if original_height == 0 or original_width == 0:
-            return (image, 0, 0)
+        # 动态生成候选分辨率
+        allowed_resolutions = generate_allowed_resolutions(step=aligment)
+        allowed_resolutions.sort(key=lambda x: x[0] * x[1])
 
-        # 1. 计算保持宽高比的新尺寸
-        target_total_pixels = 1024 * 1024
-        max_length = (
-            original_width if original_width > original_height else original_height
-        )
-        max_area = max_length * max_length
-        scale = math.sqrt(target_total_pixels / max_area)
+        # 过滤掉超过 max_side 的
+        candidates = [
+            (tw, th) for tw, th in allowed_resolutions if max(tw, th) <= max_side
+        ]
+        if not candidates:
+            raise ValueError(
+                f"No valid resolutions under max_side={max_side} with aligment={aligment}"
+            )
 
-        new_height = int(original_height * scale)
-        new_width = int(original_width * scale)
-
-        # 2. 将尺寸对齐到指定倍数
-        # 注意: common_upscale 内部会处理crop，我们这里只需要提供最终的目标尺寸
-        alignment = 32
-        aligned_width = new_width // alignment * alignment
-        aligned_height = new_height // alignment * alignment
-
-        # 安全兜底，避免超过目标像素数
-        while aligned_width * aligned_height > target_total_pixels:
-            aligned_width -= alignment
-            aligned_height -= alignment
-
-        # 如果对齐后尺寸为0，则避免缩放
-        if aligned_width * aligned_height <= 0:
-            # 返回原始图像和尺寸，避免错误
-            return (image, original_width, original_height)
-
-        # 3. 使用对齐后的尺寸和用户选择的方法进行缩放
-        s = comfy.utils.common_upscale(
-            samples, int(aligned_width), int(aligned_height), "area", "center"
+        # 找最小缩放量的分辨率
+        _, target_w, target_h = min(
+            (
+                max(target_w / w, w / target_w, target_h / h, h / target_h),
+                target_w,
+                target_h,
+            )
+            for target_w, target_h in candidates
         )
 
-        # Convert back to [Batch, Height, Width, Channels]
-        aligned_image = s.movedim(1, -1)
-
-        return (aligned_image, int(aligned_width), int(aligned_height))
+        # 缩放
+        image = comfy.utils.common_upscale(
+            image.movedim(-1, 1), target_w, target_h, "lanczos", "center"
+        ).movedim(1, -1)
+        return (image, target_w, target_h)

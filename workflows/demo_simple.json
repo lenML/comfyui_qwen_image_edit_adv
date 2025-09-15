@@ -2,7 +2,7 @@
   "id": "91f6bbe2-ed41-4fd6-bac7-71d5b5864ecb",
   "revision": 0,
   "last_node_id": 148,
-  "last_link_id": 334,
+  "last_link_id": 335,
   "nodes": [
     {
       "id": 101,
@@ -94,7 +94,6 @@
           "type": "VAE",
           "links": [
             198,
-            199,
             255,
             287
           ]
@@ -206,168 +205,6 @@
       "widgets_values": [
         1
       ]
-    },
-    {
-      "id": 88,
-      "type": "VAEEncode",
-      "pos": [
-        1060.7415771484375,
-        722.9301147460938
-      ],
-      "size": [
-        140,
-        46
-      ],
-      "flags": {},
-      "order": 14,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "pixels",
-          "type": "IMAGE",
-          "link": 334
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 199
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            254
-          ]
-        }
-      ],
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.3.50",
-        "Node name for S&R": "VAEEncode",
-        "enableTabs": false,
-        "tabWidth": 65,
-        "tabXOffset": 10,
-        "hasSecondTab": false,
-        "secondTabText": "Send Back",
-        "secondTabOffset": 80,
-        "secondTabWidth": 65,
-        "ue_properties": {
-          "widget_ue_connectable": {}
-        }
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 128,
-      "type": "KSampler (Efficient)",
-      "pos": [
-        1056.0452880859375,
-        80.4896011352539
-      ],
-      "size": [
-        325,
-        562
-      ],
-      "flags": {},
-      "order": 15,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 251
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 289
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 253
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 254
-        },
-        {
-          "name": "optional_vae",
-          "shape": 7,
-          "type": "VAE",
-          "link": 255
-        },
-        {
-          "name": "script",
-          "shape": 7,
-          "type": "SCRIPT",
-          "link": null
-        },
-        {
-          "name": "seed",
-          "type": "INT",
-          "widget": {
-            "name": "seed"
-          },
-          "link": 318
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": null
-        },
-        {
-          "name": "CONDITIONING+",
-          "type": "CONDITIONING",
-          "links": null
-        },
-        {
-          "name": "CONDITIONING-",
-          "type": "CONDITIONING",
-          "links": null
-        },
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": null
-        },
-        {
-          "name": "VAE",
-          "type": "VAE",
-          "links": null
-        },
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            262
-          ]
-        }
-      ],
-      "properties": {
-        "cnr_id": "efficiency-nodes-comfyui",
-        "ver": "9e3c5aa4976ad457065ef06a0dfdfc66e17c59ee",
-        "Node name for S&R": "KSampler (Efficient)"
-      },
-      "widgets_values": [
-        342140273443667,
-        null,
-        4,
-        1,
-        "euler",
-        "simple",
-        1,
-        "auto",
-        "true"
-      ],
-      "color": "#223322",
-      "bgcolor": "#335533",
-      "shape": 1
     },
     {
       "id": 104,
@@ -530,42 +367,6 @@
       ]
     },
     {
-      "id": 138,
-      "type": "StringArea",
-      "pos": [
-        17.192825317382812,
-        655.3043212890625
-      ],
-      "size": [
-        400,
-        200
-      ],
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "STRING",
-          "type": "STRING",
-          "links": [
-            304
-          ]
-        }
-      ],
-      "title": "Prompt",
-      "properties": {
-        "cnr_id": "comfyui-easyapi-nodes",
-        "ver": "1.1.5",
-        "Node name for S&R": "StringArea"
-      },
-      "widgets_values": [
-        "Replace clothing with office lady suit uniform"
-      ],
-      "color": "#232",
-      "bgcolor": "#353"
-    },
-    {
       "id": 141,
       "type": "INTConstant",
       "pos": [
@@ -577,7 +378,7 @@
         58
       ],
       "flags": {},
-      "order": 5,
+      "order": 4,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -600,115 +401,6 @@
       ],
       "color": "#1b4669",
       "bgcolor": "#29699c"
-    },
-    {
-      "id": 108,
-      "type": "Image Comparer (rgthree)",
-      "pos": [
-        1429.6168212890625,
-        76.67964172363281
-      ],
-      "size": [
-        613.73681640625,
-        757.9778442382812
-      ],
-      "flags": {},
-      "order": 16,
-      "mode": 0,
-      "inputs": [
-        {
-          "dir": 3,
-          "name": "image_a",
-          "type": "IMAGE",
-          "link": 262
-        },
-        {
-          "dir": 3,
-          "name": "image_b",
-          "type": "IMAGE",
-          "link": 333
-        }
-      ],
-      "outputs": [],
-      "properties": {
-        "cnr_id": "rgthree-comfy",
-        "ver": "0aa6d0a2032b78d9e8c057faeb825c94e3f07cca",
-        "comparer_mode": "Slide"
-      },
-      "widgets_values": [
-        [
-          {
-            "name": "A",
-            "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_rhcku_00003_.png&type=temp&subfolder=&rand=0.7873918651676459"
-          },
-          {
-            "name": "B",
-            "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_rhcku_00004_.png&type=temp&subfolder=&rand=0.6341855506563895"
-          }
-        ]
-      ]
-    },
-    {
-      "id": 133,
-      "type": "TextEncodeQwenImageEditAdv",
-      "pos": [
-        622.7688598632812,
-        81.55364227294922
-      ],
-      "size": [
-        400,
-        200
-      ],
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 286
-        },
-        {
-          "name": "vae",
-          "shape": 7,
-          "type": "VAE",
-          "link": 287
-        },
-        {
-          "name": "image",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": 331
-        },
-        {
-          "name": "prompt",
-          "type": "STRING",
-          "widget": {
-            "name": "prompt"
-          },
-          "link": 304
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [
-            289
-          ]
-        }
-      ],
-      "properties": {
-        "cnr_id": "comfyui_qwen_image_edit_adv",
-        "ver": "1ae3887d65943867c90d3829287c2065f1e52547",
-        "Node name for S&R": "TextEncodeQwenImageEditAdv",
-        "aux_id": "lenML/comfyui_qwen_image_edit_adv"
-      },
-      "widgets_values": [
-        ""
-      ]
     },
     {
       "id": 111,
@@ -750,12 +442,12 @@
       "id": 148,
       "type": "QwenImageEditSimpleScale",
       "pos": [
-        628.9420776367188,
-        344.4936828613281
+        632.7329711914062,
+        94.46479034423828
       ],
       "size": [
         217.31991577148438,
-        66
+        122
       ],
       "flags": {},
       "order": 10,
@@ -773,9 +465,7 @@
           "type": "IMAGE",
           "links": [
             331,
-            332,
-            333,
-            334
+            333
           ]
         },
         {
@@ -793,36 +483,273 @@
         "cnr_id": "comfyui_qwen_image_edit_adv",
         "ver": "1ae3887d65943867c90d3829287c2065f1e52547",
         "Node name for S&R": "QwenImageEditSimpleScale"
-      }
+      },
+      "widgets_values": [
+        1024,
+        32
+      ]
     },
     {
-      "id": 117,
-      "type": "PreviewImage",
+      "id": 133,
+      "type": "TextEncodeQwenImageEditAdv",
       "pos": [
-        636.4955444335938,
-        593.0325927734375
+        637.9469604492188,
+        271.2795715332031
       ],
       "size": [
-        376.3637390136719,
-        505.1707763671875
+        236.78866577148438,
+        128
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 286
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 287
+        },
+        {
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 331
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "prompt"
+          },
+          "link": 304
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            289
+          ]
+        },
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            335
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui_qwen_image_edit_adv",
+        "ver": "1ae3887d65943867c90d3829287c2065f1e52547",
+        "Node name for S&R": "TextEncodeQwenImageEditAdv",
+        "aux_id": "lenML/comfyui_qwen_image_edit_adv"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 128,
+      "type": "KSampler (Efficient)",
+      "pos": [
+        641.6831665039062,
+        462.9770812988281
+      ],
+      "size": [
+        325,
+        562
       ],
       "flags": {},
       "order": 13,
       "mode": 0,
       "inputs": [
         {
-          "name": "images",
+          "name": "model",
+          "type": "MODEL",
+          "link": 251
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 289
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 253
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 335
+        },
+        {
+          "name": "optional_vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 255
+        },
+        {
+          "name": "script",
+          "shape": 7,
+          "type": "SCRIPT",
+          "link": null
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": 318
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": null
+        },
+        {
+          "name": "CONDITIONING+",
+          "type": "CONDITIONING",
+          "links": null
+        },
+        {
+          "name": "CONDITIONING-",
+          "type": "CONDITIONING",
+          "links": null
+        },
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": null
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": null
+        },
+        {
+          "name": "IMAGE",
           "type": "IMAGE",
-          "link": 332
+          "links": [
+            262
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "efficiency-nodes-comfyui",
+        "ver": "9e3c5aa4976ad457065ef06a0dfdfc66e17c59ee",
+        "Node name for S&R": "KSampler (Efficient)"
+      },
+      "widgets_values": [
+        342140273443667,
+        null,
+        4,
+        1,
+        "euler",
+        "simple",
+        1,
+        "auto",
+        "true"
+      ],
+      "color": "#223322",
+      "bgcolor": "#335533",
+      "shape": 1
+    },
+    {
+      "id": 108,
+      "type": "Image Comparer (rgthree)",
+      "pos": [
+        997.0415649414062,
+        88.82212829589844
+      ],
+      "size": [
+        962.8325805664062,
+        1052.4324951171875
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "image_a",
+          "type": "IMAGE",
+          "link": 262
+        },
+        {
+          "dir": 3,
+          "name": "image_b",
+          "type": "IMAGE",
+          "link": 333
         }
       ],
       "outputs": [],
       "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.3.56",
-        "Node name for S&R": "PreviewImage"
+        "cnr_id": "rgthree-comfy",
+        "ver": "0aa6d0a2032b78d9e8c057faeb825c94e3f07cca",
+        "comparer_mode": "Slide"
       },
-      "widgets_values": []
+      "widgets_values": [
+        [
+          {
+            "name": "A",
+            "selected": true,
+            "url": "/api/view?filename=rgthree.compare._temp_xltyi_00005_.png&type=temp&subfolder=&rand=0.5738109748681053"
+          },
+          {
+            "name": "B",
+            "selected": true,
+            "url": "/api/view?filename=rgthree.compare._temp_xltyi_00006_.png&type=temp&subfolder=&rand=0.3947063594699278"
+          }
+        ]
+      ]
+    },
+    {
+      "id": 138,
+      "type": "StringArea",
+      "pos": [
+        17.192825317382812,
+        655.3043212890625
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            304
+          ]
+        }
+      ],
+      "title": "Prompt",
+      "properties": {
+        "cnr_id": "comfyui-easyapi-nodes",
+        "ver": "1.1.5",
+        "Node name for S&R": "StringArea"
+      },
+      "widgets_values": [
+        "Replace clothing with office lady suit uniform.\n\nkeep pose, body, face, background unchanged."
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
     }
   ],
   "links": [
@@ -847,14 +774,6 @@
       105,
       0,
       77,
-      1,
-      "VAE"
-    ],
-    [
-      199,
-      105,
-      0,
-      88,
       1,
       "VAE"
     ],
@@ -889,14 +808,6 @@
       128,
       2,
       "CONDITIONING"
-    ],
-    [
-      254,
-      88,
-      0,
-      128,
-      3,
-      "LATENT"
     ],
     [
       255,
@@ -987,14 +898,6 @@
       "IMAGE"
     ],
     [
-      332,
-      148,
-      0,
-      117,
-      0,
-      "IMAGE"
-    ],
-    [
       333,
       148,
       0,
@@ -1003,12 +906,12 @@
       "IMAGE"
     ],
     [
-      334,
-      148,
-      0,
-      88,
-      0,
-      "IMAGE"
+      335,
+      133,
+      1,
+      128,
+      3,
+      "LATENT"
     ]
   ],
   "groups": [
@@ -1018,8 +921,8 @@
       "bounding": [
         613.9092407226562,
         -0.028808487579226494,
-        1450.482421875,
-        1167.8714599609375
+        1403.430419921875,
+        1172.4249267578125
       ],
       "color": "#3f789e",
       "font_size": 24,
@@ -1055,10 +958,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.6588450000000009,
+      "scale": 0.6588450000000018,
       "offset": [
-        465.48975000683646,
-        44.65263681952827
+        381.8462848973932,
+        139.79823166103097
       ]
     },
     "frontendVersion": "1.25.11",

@@ -1,62 +1,106 @@
 # Qwen Image Edit Adv - ComfyUI Nodes
 
-这里提供了以下自定义节点：
+这里提供了改进后的 **Qwen Image Edit** 相关自定义节点，主要目标是修复 ComfyUI 内置节点导致的**编辑结果偏移**问题，并提供更灵活的缩放和裁剪逻辑。
 
-- TextEncodeQwenImageEditAdv: 仅编码图片和 prompt 不进行缩放
-- QwenImageEditScale: 缩放图片以符合 Qwen Image Edit 模型需要
+主要节点：
 
-<img width="957" height="773" alt="image" src="https://github.com/user-attachments/assets/c0872af7-2f41-4c88-b822-932c9628d558" />
+- **TextEncodeQwenImageEditAdv**: 仅负责编码图片和 prompt，不进行缩放
+- **QwenImageEditScale**: 提供灵活可控的缩放和裁剪逻辑，满足 Qwen Image Edit 模型需求
+- **QwenImageEditSimpleScale**: 自动选择最合适的分辨率进行缩放的简化版
 
-> 使用对比节点可以看出没有任何的偏移出现，且不需要抽卡多次生成
+<img width="957" height="773" alt="workflow" src="https://github.com/user-attachments/assets/c0872af7-2f41-4c88-b822-932c9628d558" />
+
+> 在对比测试中，可以看到本实现不会出现偏移问题，且无需多次抽卡生成。
+
+---
 
 ## 背景
 
-使用 comfyui 内置的 qwen image edit 节点编辑图片的时候，总是会导致输出编辑结果偏移
-根据我的调查，主要问题出现在 `TextEncodeQwenImageEdit` 这个节点导致的，其中包含了对于图片的缩放逻辑，而其缩放规则不符合要求，且不透明难以调试。
+ComfyUI 内置的 `TextEncodeQwenImageEdit` 节点包含了强绑定的缩放逻辑，但该缩放方式与 Qwen Image Edit 模型官方要求并不完全一致，且难以调试。
+因此，本仓库将 **缩放** 与 **编码** 分离开，并提供更合理的缩放策略，方便测试和调优。
 
-所以我开发了这个自定义节点，将缩放和编码分离开，方便测试，同时修改了缩放逻辑以符合 qwen image edit 官方要求。
+你可以使用 `./workflows/qwen-image-edit-adv.json` 工作流快速对比官方流程与本节点输出结果，并通过 comparer 查看一致性。
 
-对比测试可以使用 `./workflows/qwen-image-edit-adv.json` 工作流，其中包含了官方流程和本节点的使用示例，以及最终对于两个输出的 comparer 。
+---
 
-## 参数和配置
+## 节点与参数说明
 
-### TextEncodeQwenImageEditAdv
+### 1. TextEncodeQwenImageEditAdv
 
-<img width="521" height="308" alt="image" src="https://github.com/user-attachments/assets/16366f89-4ec1-424f-ac07-d63405ae5319" />
+<img width="521" height="308" alt="encode" src="https://github.com/user-attachments/assets/16366f89-4ec1-424f-ac07-d63405ae5319" />
 
-TextEncodeQwenImageEditAdv 节点的用法和 TextEncodeQwenImageEdit 完全相同
+作用与内置的 `TextEncodeQwenImageEdit` 基本一致：
 
-### QwenImageEditScale
+- 输入 `clip`、`prompt`，可选 `vae` 和 `image`
+- 输出 **conditioning** 和 **latent**
+- 不包含任何缩放逻辑，更透明可控
 
-<img width="347" height="252" alt="image" src="https://github.com/user-attachments/assets/cc4dbc78-e1ed-45e4-9c98-1b2026d87bae" />
+---
 
-QwenImageEditScale 节点中包含多个可配置的值，几乎不需要改动，除非特殊情况
+### 2. QwenImageEditScale
 
-对于每个值的含义：
+<img width="347" height="252" alt="scale" src="https://github.com/user-attachments/assets/cc4dbc78-e1ed-45e4-9c98-1b2026d87bae" />
 
-- upscale_method: 缩放方法，由于调整图像会进行一定缩放，所以可以选择缩放方法，但是一般情况前后调整非常小，所以默认即可
-- crop: 即是否裁剪图片，默认即可
-- target_megapixels:
-  - 调整图片的目标值，1 表示调整到 qwen image edit 模型需要的像素（1024\*1024 px）大小，默认即可
-  - 但是也有一定概率仍然导致一致性有问题，此时可以调大或者调小或者调大
-  - 调大的作用：提供更多模型可发挥空间，更具创意但是容易不遵循 prompt 生成
-  - 调小的作用：将输入严格限制到模型可控制范围，比如设置为 0.9 几乎百分之百不会导致偏移（默认 1 仍然有一定概率可能偏移，和输入图片的分辨率有关）
-  - 推荐值： `1` `0.65` `0.95` `0.9` `2`
-- alignment: 需要对齐到什么分辨率尺寸，此处建议默认 32，此值为 qwen 官方使用值，具体为什么是这个值，和模型训练数据/vae/clip 有关
-  - 推荐值： `32` `16` `56` `14` `8`
+提供高度可配置的缩放与裁剪逻辑。
 
-### QwenImageEditSimpleScale
+参数说明：
 
-<img width="410" height="176" alt="image" src="https://github.com/user-attachments/assets/7121e914-770b-411e-a767-af11d6db29d5" />
+- **upscale_method**: 缩放方法（`area`/`bicubic`/`bilinear`/`nearest-exact`/`lanczos`），一般无需修改
+- **ratio_strategy**: 长宽比处理策略
 
-这是 QwenImageEditScale 节点的简化版，作用一样，但是不需要配置，通过一个简单的公式自动缩放到最适合的大小。与 QwenImageEditScale 相比往往会压缩更多像素。
+  - `disabled`: 不处理比例
+  - `closest`: 自动裁剪为最接近的官方允许比例
+  - `W:H`: 固定裁剪到指定比例（如 `3:2`）
 
-建议：一般情况使用 `QwenImageEditSimpleScale` 即可， 如果需要调试则使用 `QwenImageEditScale`
+- **target_megapixels**:
 
-### Consistance lora
+  - 控制缩放后的总像素量
+  - 默认 `1.0` → 接近 `1024x1024`
+  - 可调节范围 `0.3M ~ 1.4M`，推荐值：`1`、`0.65`、`0.95`、`0.9`、`2`
+  - 越大 → 模型自由度更高，越容易不严格遵循 prompt
+  - 越小 → 一致性更强，不容易偏移
 
-如果需要更加强的一致性控制，也可以尝试和 xiaozhijason 制作的 [QwenEdit Consistance Edit Lora](https://civitai.com/models/1939453/qwenedit-consistance-edit-lora) 一起使用
+- **alignment**: 尺寸对齐的步长（默认 `32`，官方训练使用值），推荐值：`32`、`16`、`56`、`14`、`8`
 
-## 后续
+返回结果：
 
-后续可能会增加更多和 qwen image edit 有关的功能，但是，将仅限于不引入任何第三方依赖的前提下进行开发
+- `IMAGE`: 缩放后的图像
+- `width` / `height`: 实际输出分辨率
+- `ratio`: 裁剪后的比例字符串（如 `3:2`）
+
+---
+
+### 3. QwenImageEditSimpleScale
+
+`QwenImageEditScale` 的简化版：
+
+- 自动根据输入尺寸选择最合适的缩放比例
+- 保证分辨率落在 **Qwen Image Edit 可接受范围 (0.3M–1.4M pixels)**
+- 仅需设置：
+
+  - **max_side**: 最大边长（默认 `1024`）
+  - **aligment**: 对齐步长（默认 `32`）
+
+适用场景：
+
+- 一般使用推荐 `QwenImageEditSimpleScale`（自动化处理）
+- 需要手动调试时使用 `QwenImageEditScale`
+
+---
+
+## LoRA 推荐
+
+结合以下 LoRA 使用，可以进一步提升一致性和低分辨率效果：
+
+- [DiffSynth-Studio/Qwen-Image-Edit-Lowres-Fix](https://modelscope.cn/models/DiffSynth-Studio/Qwen-Image-Edit-Lowres-Fix/files)
+- [QwenEdit Consistance Edit Lora](https://civitai.com/models/1939453/qwenedit-consistance-edit-lora) by xiaozhijason
+
+---
+
+## 后续计划
+
+未来可能会继续扩展更多 Qwen Image Edit 相关功能：
+
+- 仅限 **不依赖任何第三方库** 的实现
+- 提供更多灵活可控的分辨率适配策略
+- 优化与不同 VAE/CLIP 组合的兼容性
