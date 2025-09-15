@@ -273,11 +273,11 @@ class QwenImageEditSimpleScale:
         return {
             "required": {
                 "image": ("IMAGE",),
-                "max_side": (
+                "resolution": (
                     "INT",
                     {"default": 1024, "min": 512, "max": 4096, "step": 8},
                 ),
-                "aligment": (
+                "alignment": (
                     "INT",
                     {"default": 32, "min": 8, "max": 256, "step": 2},
                 ),
@@ -289,36 +289,21 @@ class QwenImageEditSimpleScale:
     CATEGORY = "QwenImageEditAdv/Scale"
 
     FUNCTION = "scale"
-    DESCRIPTION = "Resizes image to the closest Qwen-Image-Edit compatible resolution (0.3M–1.4M pixels), with configurable max side length and step alignment."
+    DESCRIPTION = "Resizes image to the closest Qwen-Image-Edit compatible resolution (1M pixels), with configurable max side length and step alignment."
 
-    def scale(self, image, max_side=1024, aligment=32):
+    def scale(self, image, resolution=1024, alignment=32):
         h, w = image.shape[1:3]
 
-        # 动态生成候选分辨率
-        allowed_resolutions = generate_allowed_resolutions(step=aligment)
-        allowed_resolutions.sort(key=lambda x: x[0] * x[1])
+        res = resolution**2
+        input_size = h * w
+        scale_factor = math.sqrt(res / input_size)
 
-        # 过滤掉超过 max_side 的
-        candidates = [
-            (tw, th) for tw, th in allowed_resolutions if max(tw, th) <= max_side
-        ]
-        if not candidates:
-            raise ValueError(
-                f"No valid resolutions under max_side={max_side} with aligment={aligment}"
-            )
+        nh = h * scale_factor
+        nw = w * scale_factor
+        nh = round(nh / alignment) * alignment
+        nw = round(nw / alignment) * alignment
 
-        # 找最小缩放量的分辨率
-        _, target_w, target_h = min(
-            (
-                max(target_w / w, w / target_w, target_h / h, h / target_h),
-                target_w,
-                target_h,
-            )
-            for target_w, target_h in candidates
-        )
-
-        # 缩放
         image = comfy.utils.common_upscale(
-            image.movedim(-1, 1), target_w, target_h, "lanczos", "center"
+            image.movedim(-1, 1), nw, nh, "lanczos", "center"
         ).movedim(1, -1)
-        return (image, target_w, target_h)
+        return (image, nw, nh)

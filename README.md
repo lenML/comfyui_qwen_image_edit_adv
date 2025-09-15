@@ -77,16 +77,17 @@ ComfyUI 内置的 `TextEncodeQwenImageEdit` 节点包含了强绑定的缩放逻
 `QwenImageEditScale` 的简化版：
 
 - 自动根据输入尺寸选择最合适的缩放比例
-- 保证分辨率落在 **Qwen Image Edit 可接受范围 (0.3M–1.4M pixels)**
+- 保证分辨率落在 **Qwen Image Edit 可接受范围 (1M pixels)**
 - 仅需设置：
 
-  - **max_side**: 最大边长（默认 `1024`）
-  - **aligment**: 对齐步长（默认 `32`）
+  - **resolution**: 分辨率（默认 `1024`） 几乎不需要改，这个是由模型训练导致的几乎只有 1024 分辨率可以正常使用
+  - **aligment**: 对齐步长（默认 `32`） 几乎不需要改，如果你想尝试修改推荐： `32` `56` `16` `8`
 
 适用场景：
 
-- 一般使用推荐 `QwenImageEditSimpleScale`（自动化处理）
+- 一般使用推荐 `QwenImageEditSimpleScale`
 - 需要手动调试时使用 `QwenImageEditScale`
+- 甚至，你可以不使用本包的缩放节点，你完全可以用其他 resize 节点来缩放图片，但是需要你更多的调试
 
 ---
 
@@ -96,4 +97,3 @@ ComfyUI 内置的 `TextEncodeQwenImageEdit` 节点包含了强绑定的缩放逻
 
 - [DiffSynth-Studio/Qwen-Image-Edit-Lowres-Fix](https://modelscope.cn/models/DiffSynth-Studio/Qwen-Image-Edit-Lowres-Fix/files)
 - [QwenEdit Consistance Edit Lora](https://civitai.com/models/1939453/qwenedit-consistance-edit-lora) by xiaozhijason
-
