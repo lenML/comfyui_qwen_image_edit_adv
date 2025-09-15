@@ -97,12 +97,3 @@ ComfyUI 内置的 `TextEncodeQwenImageEdit` 节点包含了强绑定的缩放逻
 - [DiffSynth-Studio/Qwen-Image-Edit-Lowres-Fix](https://modelscope.cn/models/DiffSynth-Studio/Qwen-Image-Edit-Lowres-Fix/files)
 - [QwenEdit Consistance Edit Lora](https://civitai.com/models/1939453/qwenedit-consistance-edit-lora) by xiaozhijason
 
----
-
-## 后续计划
-
-未来可能会继续扩展更多 Qwen Image Edit 相关功能：
-
-- 仅限 **不依赖任何第三方库** 的实现
-- 提供更多灵活可控的分辨率适配策略
-- 优化与不同 VAE/CLIP 组合的兼容性
