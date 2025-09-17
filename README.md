@@ -1,3 +1,5 @@
+[cn](./README.md) | [en](./README_en.md)
+
 # Qwen Image Edit Adv - ComfyUI Nodes
 
 这里提供了改进后的 **Qwen Image Edit** 相关自定义节点，主要目标是修复 ComfyUI 内置节点导致的**编辑结果偏移**问题，并提供更灵活的缩放和裁剪逻辑。
