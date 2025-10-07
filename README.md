@@ -33,9 +33,10 @@ ComfyUI 内置的 `TextEncodeQwenImageEdit` 节点包含了强绑定的缩放逻
 
 作用与内置的 `TextEncodeQwenImageEdit` 基本一致：
 
-- 输入 `clip`、`prompt`，可选 `vae` 和 `image`
+- 输入 `clip`、`prompt`，可选 `vae` 和 `images`
 - 输出 **conditioning** 和 **latent**
 - 不包含任何缩放逻辑，更透明可控
+- 支持多图参考
 
 ---
 
